@@ -16,4 +16,4 @@ import streamlit_nested_layout
 ```
 
 ### Demo
-![Demo](images/demo.png)
+![Demo](https://raw.githubusercontent.com/joy13975/streamlit-nested-layout/main/images/demo.png)
