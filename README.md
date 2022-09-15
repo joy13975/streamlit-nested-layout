@@ -1,4 +1,19 @@
 # streamlit-nested-layout
-Enables [streamlit](https://github.com/streamlit/streamlit) columns and expanders to be nested through monkey patching.
+An unofficial monkey patch that enables [streamlit](https://github.com/streamlit/streamlit) columns and expanders to be nested.
 
+⚠️Streamlit developers disallow this behavior by design, so you are on your own if you encounter issues using this package!⚠️
+
+### Install
+```
+pip install streamlit-nested-layout
+```
+
+### Usage
+Just import this package once in your app.
+
+```
+import streamlit_nested_layout
+```
+
+### Demo
 ![Demo](images/demo.png)
