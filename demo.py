@@ -1,6 +1,6 @@
 import streamlit as st
 
-import nest
+import streamlit_nested_layout
 
 outer_cols = st.columns([1, 1])
 
