@@ -1,7 +1,11 @@
 # streamlit-nested-layout
 An unofficial monkey patch that enables [streamlit](https://github.com/streamlit/streamlit) columns and expanders to be nested.
 
-⚠️Streamlit developers disallow this behavior by design, so you are on your own if you encounter issues using this package!⚠️
+```diff
+- ⚠️Streamlit developers disallow this behavior by design, so you are on your own if you encounter issues using this package!⚠️
+```
+
+Last tested for `streamlit==1.28.2`
 
 Credits to [streamlit PR #5266](https://github.com/streamlit/streamlit/pull/5266) by [@ZeroCool940711](https://github.com/ZeroCool940711).
 
