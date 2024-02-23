@@ -4,22 +4,31 @@ from streamlit.delta_generator import _enqueue_message
 def _nestable_block(
     self,
     block_proto: Block_pb2.Block = Block_pb2.Block(),
-) -> "DeltaGenerator":
+    dg_type: type | None = None,
+) -> DeltaGenerator:
     # Operate on the active DeltaGenerator, in case we're in a `with` block.
     dg = self._active_dg
 
     # Prevent nested columns & expanders by checking all parents.
     block_type = block_proto.WhichOneof("type")
     # Convert the generator to a list, so we can use it multiple times.
-    # parent_block_types = frozenset(dg._parent_block_types)
-    # if block_type == "column" and block_type in parent_block_types:
-    #     raise StreamlitAPIException(
-    #         "Columns may not be nested inside other columns."
-    #     )
-    # if block_type == "expandable" and block_type in parent_block_types:
-    #     raise StreamlitAPIException(
-    #         "Expanders may not be nested inside other expanders."
-    #     )
+    parent_block_types = list(dg._parent_block_types)
+
+    if block_type == "column":
+        num_of_parent_columns = self._count_num_of_parent_columns(
+            parent_block_types
+        )
+        if (
+            self._root_container == RootContainer.SIDEBAR
+            and num_of_parent_columns > 0
+        ):
+            raise StreamlitAPIException(
+                "Columns cannot be placed inside other columns in the sidebar. This is only possible in the main area of the app."
+            )
+    if block_type == "chat_message" and block_type in frozenset(parent_block_types):
+        raise StreamlitAPIException(
+            "Chat messages cannot nested inside other chat messages."
+        )
 
     if dg._root_container is None or dg._cursor is None:
         return dg
@@ -35,18 +44,27 @@ def _nestable_block(
         root_container=dg._root_container,
         parent_path=dg._cursor.parent_path + (dg._cursor.index,),
     )
-    block_dg = DeltaGenerator(
-        root_container=dg._root_container,
-        cursor=block_cursor,
-        parent=dg,
-        block_type=block_type,
+
+    # `dg_type` param added for st.status container. It allows us to
+    # instantiate DeltaGenerator subclasses from the function.
+    if dg_type is None:
+        dg_type = DeltaGenerator
+
+    block_dg = cast(
+        DeltaGenerator,
+        dg_type(
+            root_container=dg._root_container,
+            cursor=block_cursor,
+            parent=dg,
+            block_type=block_type,
+        ),
     )
     # Blocks inherit their parent form ids.
     # NOTE: Container form ids aren't set in proto.
     block_dg._form_data = FormData(current_form_id(dg))
 
     # Must be called to increment this cursor's index.
-    dg._cursor.get_locked_cursor(last_index=None)
+    dg._cursor.get_locked_cursor(add_rows_metadata=None)
     _enqueue_message(msg)
 
     caching.save_block_message(

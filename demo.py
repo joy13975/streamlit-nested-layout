@@ -34,3 +34,11 @@ with outer_cols[1]:
                 st.selectbox('selectbox', [1,2,3], key='sel5')
         with st.expander('Nested Expander 2'):
             st.markdown('Some More Stuff Here')
+
+with st.status("Outer status"):
+    with st.status("Nested Status 1"):
+        st.write("Do Some Stuff Here")
+
+    with st.status("Nested status 2"):
+        st.write("Do More Stuff here")
+
