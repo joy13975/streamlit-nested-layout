@@ -6,23 +6,24 @@ from streamlit.delta_generator import _enqueue_message
 from streamlit.elements.form import FormData, current_form_id
 from streamlit.proto import Block_pb2, ForwardMsg_pb2
 from streamlit.runtime import caching
+from streamlit.proto.RootContainer_pb2 import RootContainer
 
 def _nestable_block(
     self,
     block_proto: Block_pb2.Block = Block_pb2.Block(),
     dg_type: Union[type, None] = None,
-) -> "DeltaGenerator":
+) -> DeltaGenerator:
     # Operate on the active DeltaGenerator, in case we're in a `with` block.
     dg = self._active_dg
 
     # Prevent nested columns & expanders by checking all parents.
     block_type = block_proto.WhichOneof("type")
     # Convert the generator to a list, so we can use it multiple times.
-    parent_block_types = list(dg._parent_block_types)
+    ancestor_block_types = list(dg._ancestor_block_types)
 
     # if block_type == "column":
     #     num_of_parent_columns = self._count_num_of_parent_columns(
-    #         parent_block_types
+    #         ancestor_block_types
     #     )
     #     if (
     #         self._root_container == RootContainer.SIDEBAR
@@ -35,15 +36,15 @@ def _nestable_block(
     #         raise StreamlitAPIException(
     #             "Columns can only be placed inside other columns up to one level of nesting."
     #         )
-    # if block_type == "chat_message" and block_type in frozenset(parent_block_types):
+    # if block_type == "chat_message" and block_type in ancestor_block_types:
     #     raise StreamlitAPIException(
     #         "Chat messages cannot nested inside other chat messages."
     #     )
-    # if block_type == "expandable" and block_type in frozenset(parent_block_types):
+    # if block_type == "expandable" and block_type in ancestor_block_types:
     #     raise StreamlitAPIException(
     #         "Expanders may not be nested inside other expanders."
     #     )
-    # if block_type == "popover" and block_type in frozenset(parent_block_types):
+    # if block_type == "popover" and block_type in ancestor_block_types:
     #     raise StreamlitAPIException(
     #         "Popovers may not be nested inside other popovers."
     #     )
