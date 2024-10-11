@@ -5,7 +5,7 @@ An unofficial monkey patch that enables [streamlit](https://github.com/streamlit
 - ⚠️Streamlit developers disallow this behavior by design, so you are on your own if you encounter issues using this package!⚠️
 ```
 
-Last tested for `streamlit==1.34.0` on `Python 3.9.18`.
+Last tested for `streamlit==1.39.0` on `Python 3.9.18`.
 
 Credits to [streamlit PR #5266](https://github.com/streamlit/streamlit/pull/5266) by [@ZeroCool940711](https://github.com/ZeroCool940711).
 
